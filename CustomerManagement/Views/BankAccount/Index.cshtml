@@ -1,12 +1,12 @@
 ﻿@model CustomerManagement.Models.客戶銀行資訊
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "客戶銀行資訊管理";
     var bankAccounts = (List<CustomerManagement.Models.客戶銀行資訊>)ViewBag.BankAccounts;
     var customers = (SelectList)ViewBag.Customers;
 }
 
-<h2>Index</h2>
+<h2>客戶銀行資訊管理</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")

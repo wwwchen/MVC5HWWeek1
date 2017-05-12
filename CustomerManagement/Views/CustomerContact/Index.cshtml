@@ -2,12 +2,12 @@
 @model CustomerManagement.Models.客戶聯絡人
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "客戶聯絡人管理";
     var customerManagements = (List<CustomerManagement.Models.客戶聯絡人>)ViewBag.CustomerManagements;
     var customers = (SelectList)ViewBag.Customers;
 }
 
-<h2>Index</h2>
+<h2>客戶聯絡人管理</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")

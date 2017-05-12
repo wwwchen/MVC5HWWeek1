@@ -176,6 +176,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EFGeneratePartialClass.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\V客戶統計資料.cs">
+      <DependentUpon>Customer.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\客戶聯絡人.cs">
       <DependentUpon>Customer.tt</DependentUpon>
     </Compile>
@@ -273,6 +276,7 @@
     <Content Include="Views\BankAccount\Details.cshtml" />
     <Content Include="Views\BankAccount\Edit.cshtml" />
     <Content Include="Views\BankAccount\Index.cshtml" />
+    <Content Include="Views\CustomerInfo\CustomerStatistics.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\ViewModels\" />

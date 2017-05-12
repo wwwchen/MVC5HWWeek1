@@ -138,5 +138,10 @@ namespace CustomerManagement.Controllers
             }
             base.Dispose(disposing);
         }
+
+        public ActionResult CustomerStatistics()
+        {
+            return View(db.V客戶統計資料.ToList());
+        }
     }
 }
