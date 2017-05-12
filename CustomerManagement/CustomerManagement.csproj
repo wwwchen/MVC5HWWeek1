@@ -176,6 +176,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EFGeneratePartialClass.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ValidationAttributes\MobileFormatAttribute.cs" />
     <Compile Include="Models\V客戶統計資料.cs">
       <DependentUpon>Customer.tt</DependentUpon>
     </Compile>

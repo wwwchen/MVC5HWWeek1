@@ -1,3 +1,7 @@
+using System.Linq;
+using System.Web.Mvc;
+using CustomerManagement.Models.ValidationAttributes;
+
 namespace CustomerManagement.Models
 {
     using System;
@@ -5,8 +9,21 @@ namespace CustomerManagement.Models
     using System.ComponentModel.DataAnnotations;
 
     [MetadataType(typeof(客戶聯絡人MetaData))]
-    public partial class 客戶聯絡人
+    public partial class 客戶聯絡人 : IValidatableObject
     {
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            客戶資料Entities db = new 客戶資料Entities();
+            var 客戶聯絡人 = db.客戶聯絡人.AsQueryable();
+            bool checkExistingEmail = 客戶聯絡人.Any(x => x.是否已刪除 == false && x.客戶Id == 客戶Id && x.Email == Email);
+
+            if (checkExistingEmail)
+            {
+                yield return new ValidationResult("已經存在相同的 Email", new string[] { "Email" }); //一個label只能有一個錯誤訊息
+            }
+
+            yield break;
+        }
     }
 
     public partial class 客戶聯絡人MetaData
@@ -30,6 +47,7 @@ namespace CustomerManagement.Models
         public string Email { get; set; }
 
         [StringLength(50, ErrorMessage = "欄位長度不得大於 50 個字元")]
+        [MobileFormat]
         public string 手機 { get; set; }
 
         [StringLength(50, ErrorMessage = "欄位長度不得大於 50 個字元")]
