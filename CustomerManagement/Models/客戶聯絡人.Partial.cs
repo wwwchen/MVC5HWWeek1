@@ -15,7 +15,12 @@ namespace CustomerManagement.Models
         {
             客戶資料Entities db = new 客戶資料Entities();
             var 客戶聯絡人 = db.客戶聯絡人.AsQueryable();
-            bool checkExistingEmail = 客戶聯絡人.Any(x => x.是否已刪除 == false && x.客戶Id == 客戶Id && x.Email == Email);
+
+            bool checkExistingEmail = false;
+            if (this.Id == 0)
+                checkExistingEmail = 客戶聯絡人.Any(x => x.是否已刪除 == false && x.客戶Id == 客戶Id && x.Email == Email);
+            else
+                checkExistingEmail = 客戶聯絡人.Any(x => x.是否已刪除 == false && x.客戶Id == 客戶Id && x.Email == Email && x.Id != this.Id);
 
             if (checkExistingEmail)
             {
