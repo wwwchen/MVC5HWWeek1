@@ -149,6 +149,9 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BankAccountController.cs" />
+    <Compile Include="Controllers\CustomerContactController.cs" />
+    <Compile Include="Controllers\CustomerInfoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -158,10 +161,38 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Customer.Context.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Customer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Customer.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Customer.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Customer.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFGeneratePartialClass.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EFGeneratePartialClass.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\客戶聯絡人.cs">
+      <DependentUpon>Customer.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\客戶聯絡人.Partial.cs">
+      <DependentUpon>EFGeneratePartialClass.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\客戶資料.cs">
+      <DependentUpon>Customer.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\客戶資料.Partial.cs">
+      <DependentUpon>EFGeneratePartialClass.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\客戶銀行資訊.cs">
+      <DependentUpon>Customer.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\客戶銀行資訊.Partial.cs">
+      <DependentUpon>EFGeneratePartialClass.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -179,6 +210,16 @@
     <Content Include="Models\Customer.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Customer.Context.cs</LastGenOutput>
+      <DependentUpon>Customer.edmx</DependentUpon>
+    </Content>
+    <Content Include="Models\Customer.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Customer.edmx</DependentUpon>
+      <LastGenOutput>Customer.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\EFGeneratePartialClass.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>EFGeneratePartialClass.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -189,9 +230,9 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Customer.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="Models\Customer.edmx.diagram">
+    <Content Include="Models\Customer.edmx.diagram">
       <DependentUpon>Customer.edmx</DependentUpon>
-    </None>
+    </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -217,6 +258,21 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\CustomerInfo\Create.cshtml" />
+    <Content Include="Views\CustomerInfo\Delete.cshtml" />
+    <Content Include="Views\CustomerInfo\Details.cshtml" />
+    <Content Include="Views\CustomerInfo\Edit.cshtml" />
+    <Content Include="Views\CustomerInfo\Index.cshtml" />
+    <Content Include="Views\CustomerContact\Create.cshtml" />
+    <Content Include="Views\CustomerContact\Delete.cshtml" />
+    <Content Include="Views\CustomerContact\Details.cshtml" />
+    <Content Include="Views\CustomerContact\Edit.cshtml" />
+    <Content Include="Views\CustomerContact\Index.cshtml" />
+    <Content Include="Views\BankAccount\Create.cshtml" />
+    <Content Include="Views\BankAccount\Delete.cshtml" />
+    <Content Include="Views\BankAccount\Details.cshtml" />
+    <Content Include="Views\BankAccount\Edit.cshtml" />
+    <Content Include="Views\BankAccount\Index.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
