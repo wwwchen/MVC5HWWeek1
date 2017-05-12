@@ -17,8 +17,8 @@ namespace CustomerManagement.Controllers
         // GET: CustomerInfo
         public ActionResult Index()
         {
-            var customerData = db.客戶資料.ToList();
-            ViewBag.Customers = db.客戶資料.Take(10).ToList();
+            var customerData = db.客戶資料.AsQueryable();
+            ViewBag.Customers = db.客戶資料.Where(x => x.是否已刪除 == false).Take(10).ToList();
             return View(new 客戶資料());
         }
 
@@ -30,7 +30,7 @@ namespace CustomerManagement.Controllers
             if (!string.IsNullOrWhiteSpace(customer.客戶名稱))
                 customerData = customerData.Where(x => x.客戶名稱.Contains(customer.客戶名稱));
 
-            ViewBag.Customers = customerData.Take(10).ToList();
+            ViewBag.Customers = customerData.Where(x => x.是否已刪除 == false).Take(10).ToList();
 
             return View(customer);
         }
@@ -80,7 +80,7 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = db.客戶資料.Where(x => x.是否已刪除 == false).FirstOrDefault(x => x.Id == id);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -111,7 +111,7 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = db.客戶資料.Where(x => x.是否已刪除 == false).FirstOrDefault(x => x.Id == id);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -125,7 +125,7 @@ namespace CustomerManagement.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             客戶資料 客戶資料 = db.客戶資料.Find(id);
-            db.客戶資料.Remove(客戶資料);
+            客戶資料.是否已刪除 = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }

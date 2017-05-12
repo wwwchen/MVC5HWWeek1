@@ -18,7 +18,7 @@ namespace CustomerManagement.Controllers
         public ActionResult Index()
         {
             var 客戶聯絡人 = db.客戶聯絡人.Include(客 => 客.客戶資料);
-            ViewBag.CustomerManagements = 客戶聯絡人.Take(10).ToList();
+            ViewBag.CustomerManagements = 客戶聯絡人.Where(x => x.是否已刪除 == false).Take(10).ToList();
             ViewBag.Customers = new SelectList(db.客戶資料, "Id", "客戶名稱");
             return View(new 客戶聯絡人());
         }
@@ -34,7 +34,7 @@ namespace CustomerManagement.Controllers
             if (customerContact.客戶Id != 0)
                 客戶聯絡人 = 客戶聯絡人.Where(x => x.客戶Id == customerContact.客戶Id);
 
-            ViewBag.CustomerManagements = 客戶聯絡人.Take(10).ToList();
+            ViewBag.CustomerManagements = 客戶聯絡人.Where(x => x.是否已刪除 == false).Take(10).ToList();
             ViewBag.Customers = new SelectList(db.客戶資料, "Id", "客戶名稱");
 
             return View(customerContact);
@@ -58,7 +58,7 @@ namespace CustomerManagement.Controllers
         // GET: CustomerContact/Create
         public ActionResult Create()
         {
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱");
+            ViewBag.客戶Id = new SelectList(db.客戶資料.Where(x => x.是否已刪除 == false), "Id", "客戶名稱");
             return View();
         }
 
@@ -76,7 +76,7 @@ namespace CustomerManagement.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶聯絡人.客戶Id);
+            ViewBag.客戶Id = new SelectList(db.客戶資料.Where(x => x.是否已刪除 == false), "Id", "客戶名稱", 客戶聯絡人.客戶Id);
             return View(客戶聯絡人);
         }
 
@@ -87,7 +87,7 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
+            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Where(x => x.是否已刪除 == false).FirstOrDefault(x => x.Id == id);
             if (客戶聯絡人 == null)
             {
                 return HttpNotFound();
@@ -120,7 +120,7 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
+            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Where(x => x.是否已刪除 == false).FirstOrDefault(x => x.Id == id);
             if (客戶聯絡人 == null)
             {
                 return HttpNotFound();
@@ -134,7 +134,7 @@ namespace CustomerManagement.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
-            db.客戶聯絡人.Remove(客戶聯絡人);
+            客戶聯絡人.是否已刪除 = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }

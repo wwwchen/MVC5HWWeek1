@@ -18,7 +18,7 @@ namespace CustomerManagement.Controllers
         public ActionResult Index()
         {
             var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料);
-            ViewBag.BankAccounts = 客戶銀行資訊.Take(10).ToList();
+            ViewBag.BankAccounts = 客戶銀行資訊.Where(x => x.是否已刪除 == false).Take(10).ToList();
             ViewBag.Customers = new SelectList(db.客戶資料, "Id", "客戶名稱");
             return View(new 客戶銀行資訊());
         }
@@ -31,7 +31,7 @@ namespace CustomerManagement.Controllers
             if (bankAccout.客戶Id != 0)
                 客戶銀行資訊 = 客戶銀行資訊.Where(x => x.客戶Id == bankAccout.客戶Id);
 
-            ViewBag.BankAccounts = 客戶銀行資訊.Take(10).ToList();
+            ViewBag.BankAccounts = 客戶銀行資訊.Where(x => x.是否已刪除 == false).Take(10).ToList();
             ViewBag.Customers = new SelectList(db.客戶資料, "Id", "客戶名稱");
 
             return View(bankAccout);
@@ -55,7 +55,7 @@ namespace CustomerManagement.Controllers
         // GET: BankAccount/Create
         public ActionResult Create()
         {
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱");
+            ViewBag.客戶Id = new SelectList(db.客戶資料.Where(x => x.是否已刪除 == false), "Id", "客戶名稱");
             return View();
         }
 
@@ -73,7 +73,7 @@ namespace CustomerManagement.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+            ViewBag.客戶Id = new SelectList(db.客戶資料.Where(x => x.是否已刪除 == false), "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
             return View(客戶銀行資訊);
         }
 
@@ -84,7 +84,7 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Where(x => x.是否已刪除 == false).FirstOrDefault(x => x.Id == id);
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
@@ -117,7 +117,7 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
+            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Where(x => x.是否已刪除 == false).FirstOrDefault(x => x.Id == id);
             if (客戶銀行資訊 == null)
             {
                 return HttpNotFound();
@@ -131,7 +131,7 @@ namespace CustomerManagement.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
-            db.客戶銀行資訊.Remove(客戶銀行資訊);
+            客戶銀行資訊.是否已刪除 = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }
