@@ -12,7 +12,7 @@ namespace CustomerManagement.Models.ValidationAttributes
     {
         public MobileFormatAttribute() : base(DataType.Text)
         {
-            ErrorMessage = "電話格式錯誤";
+            ErrorMessage = "電話格式錯誤，必需為09xx-xxxxxx";
         }
 
         public override bool IsValid(object value)

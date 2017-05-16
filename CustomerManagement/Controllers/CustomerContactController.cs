@@ -15,29 +15,21 @@ namespace CustomerManagement.Controllers
         private 客戶資料Entities db = new 客戶資料Entities();
 
         // GET: CustomerContact
-        public ActionResult Index()
+        public ActionResult Index(string customerContactName, int? customerId)
         {
-            var 客戶聯絡人 = db.客戶聯絡人.Include(客 => 客.客戶資料);
-            ViewBag.CustomerManagements = 客戶聯絡人.Where(x => x.是否已刪除 == false).Take(10).ToList();
-            ViewBag.Customers = new SelectList(db.客戶資料, "Id", "客戶名稱");
-            return View(new 客戶聯絡人());
-        }
+            var data = db.客戶聯絡人.Where(x => x.是否已刪除 == false).AsQueryable();
 
-        [HttpPost]
-        public ActionResult Index([Bind(Include = "客戶Id,姓名")]客戶聯絡人 customerContact)
-        {
-            var 客戶聯絡人 = db.客戶聯絡人.AsQueryable();
+            if (!string.IsNullOrEmpty(customerContactName))
+                data = data.Where(x => x.姓名.Contains(customerContactName));
 
-            if (!string.IsNullOrWhiteSpace(customerContact.姓名))
-                客戶聯絡人 = 客戶聯絡人.Where(x => x.姓名.Contains(customerContact.姓名));
+            if (customerId.HasValue && customerId.Value != 0)
+                data = data.Where(x => x.客戶Id == customerId);
 
-            if (customerContact.客戶Id != 0)
-                客戶聯絡人 = 客戶聯絡人.Where(x => x.客戶Id == customerContact.客戶Id);
+            data = data.Take(10);
 
-            ViewBag.CustomerManagements = 客戶聯絡人.Where(x => x.是否已刪除 == false).Take(10).ToList();
             ViewBag.Customers = new SelectList(db.客戶資料, "Id", "客戶名稱");
 
-            return View(customerContact);
+            return View(data.ToList());
         }
 
         // GET: CustomerContact/Details/5

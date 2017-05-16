@@ -15,24 +15,18 @@ namespace CustomerManagement.Controllers
         private 客戶資料Entities db = new 客戶資料Entities();
 
         // GET: CustomerInfo
-        public ActionResult Index()
+        public ActionResult Index(string customerName)
         {
-            var customerData = db.客戶資料.AsQueryable();
-            ViewBag.Customers = db.客戶資料.Where(x => x.是否已刪除 == false).Take(10).ToList();
-            return View(new 客戶資料());
-        }
+            var data = db.客戶資料.Where(x => x.是否已刪除 == false).AsQueryable();
 
-        [HttpPost]
-        public ActionResult Index([Bind(Include = "客戶名稱")]客戶資料 customer)
-        {
-            var customerData = db.客戶資料.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(customerName))
+                data = data.Where(x => x.客戶名稱.Contains(customerName));
 
-            if (!string.IsNullOrWhiteSpace(customer.客戶名稱))
-                customerData = customerData.Where(x => x.客戶名稱.Contains(customer.客戶名稱));
+            data = data.Take(10);
 
-            ViewBag.Customers = customerData.Where(x => x.是否已刪除 == false).Take(10).ToList();
+            ViewData.Model = data.ToList();
 
-            return View(customer);
+            return View();
         }
 
         // GET: CustomerInfo/Details/5

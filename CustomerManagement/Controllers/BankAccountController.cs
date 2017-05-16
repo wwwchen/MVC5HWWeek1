@@ -15,26 +15,18 @@ namespace CustomerManagement.Controllers
         private 客戶資料Entities db = new 客戶資料Entities();
 
         // GET: BankAccount
-        public ActionResult Index()
+        public ActionResult Index(int? customerId)
         {
-            var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料);
-            ViewBag.BankAccounts = 客戶銀行資訊.Where(x => x.是否已刪除 == false).Take(10).ToList();
-            ViewBag.Customers = new SelectList(db.客戶資料, "Id", "客戶名稱");
-            return View(new 客戶銀行資訊());
-        }
+            var data = db.客戶銀行資訊.Where(x => x.是否已刪除 == false).AsQueryable();
 
-        [HttpPost]
-        public ActionResult Index([Bind(Include = "客戶Id")]客戶銀行資訊 bankAccout)
-        {
-            var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料);
+            if (customerId.HasValue && customerId.Value != 0)
+                data = data.Where(x => x.客戶Id == customerId);
 
-            if (bankAccout.客戶Id != 0)
-                客戶銀行資訊 = 客戶銀行資訊.Where(x => x.客戶Id == bankAccout.客戶Id);
+            data = data.Take(10);
 
-            ViewBag.BankAccounts = 客戶銀行資訊.Where(x => x.是否已刪除 == false).Take(10).ToList();
             ViewBag.Customers = new SelectList(db.客戶資料, "Id", "客戶名稱");
 
-            return View(bankAccout);
+            return View(data);
         }
 
         // GET: BankAccount/Details/5
