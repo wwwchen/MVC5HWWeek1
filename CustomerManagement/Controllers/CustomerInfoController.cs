@@ -13,18 +13,12 @@ namespace CustomerManagement.Controllers
     public class CustomerInfoController : Controller
     {
         private 客戶資料Entities db = new 客戶資料Entities();
+        private 客戶資料Repository repo = RepositoryHelper.Get客戶資料Repository();
 
         // GET: CustomerInfo
         public ActionResult Index(string customerName)
         {
-            var data = db.客戶資料.Where(x => x.是否已刪除 == false).AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(customerName))
-                data = data.Where(x => x.客戶名稱.Contains(customerName));
-
-            data = data.Take(10);
-
-            ViewData.Model = data.ToList();
+            ViewData.Model = repo.GetCustomerInfoList(customerName: customerName).ToList();
 
             return View();
         }
