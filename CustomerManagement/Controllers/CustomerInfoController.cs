@@ -16,9 +16,11 @@ namespace CustomerManagement.Controllers
         private readonly V客戶統計資料Repository _repoCustomerStatistic = RepositoryHelper.GetV客戶統計資料Repository();
 
         // GET: CustomerInfo
-        public ActionResult Index(string customerName)
+        public ActionResult Index(string customerName, string category)
         {
-            ViewData.Model = _repoCustomer.GetCustomerInfos(customerName: customerName).ToList();
+            ViewData.Model = _repoCustomer.GetCustomerInfos(customerName: customerName, category: category).ToList();
+
+            ViewBag.Categorys = new SelectList(_repoCustomer.GetCategorys(), "key", "value"); ;
 
             return View();
         }

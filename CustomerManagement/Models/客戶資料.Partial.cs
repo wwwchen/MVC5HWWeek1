@@ -38,6 +38,10 @@ namespace CustomerManagement.Models
 
         public bool 是否已刪除 { get; set; }
 
+        [Required]
+        [StringLength(10, ErrorMessage = "欄位長度不得大於 10 個字元")]
+        public string 客戶分類 { get; set; }
+
         public virtual ICollection<客戶銀行資訊> 客戶銀行資訊 { get; set; }
         public virtual ICollection<客戶聯絡人> 客戶聯絡人 { get; set; }
     }

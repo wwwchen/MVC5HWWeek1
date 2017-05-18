@@ -19,14 +19,25 @@ namespace CustomerManagement.Models
             return base.All().Where(x => x.是否已刪除 == false);
         }
 
-        public IQueryable<客戶資料> GetCustomerInfos(string customerName = null)
+        public IQueryable<客戶資料> GetCustomerInfos(string customerName, string category)
         {
             var data = this.All();
 
             if (!string.IsNullOrEmpty(customerName))
                 data = data.Where(x => x.客戶名稱.Contains(customerName));
 
+            if (!string.IsNullOrEmpty(category))
+                data = data.Where(x => x.客戶分類 == category);
+
             return data;
+        }
+
+        public Dictionary<string, string> GetCategorys()
+        {
+            Dictionary<string, string> dictionary = base.All().Select(x => new { key = x.客戶分類, value = x.客戶分類 })
+                .Distinct().ToDictionary(x => x.key, y => y.value);
+
+            return dictionary;
         }
 
         public 客戶資料 GetSingleRecordByCustomerId(int id)
