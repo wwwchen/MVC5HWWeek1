@@ -21,10 +21,10 @@ namespace CustomerManagement.Controllers
         }
 
         // GET: CustomerContact
-        public ActionResult Index(string customerContactName, int? customerId)
+        public ActionResult Index(string customerContactName, int? customerId, string jobTitle)
         {
             ViewData.Model = _repoCustomerContact.GetCustomerContacts(customerContactName: customerContactName,
-                customerId: customerId);
+                customerId: customerId, jobTitle: jobTitle);
 
             SetViewBagCustomers();
 

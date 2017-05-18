@@ -17,7 +17,7 @@ namespace CustomerManagement.Models
         }
 
 
-        public IQueryable<客戶聯絡人> GetCustomerContacts(string customerContactName, int? customerId)
+        public IQueryable<客戶聯絡人> GetCustomerContacts(string customerContactName, int? customerId, string jobTitle)
         {
             var data = this.All();
 
@@ -26,6 +26,9 @@ namespace CustomerManagement.Models
 
             if (customerId.HasValue && customerId.Value != 0)
                 data = data.Where(x => x.客戶Id == customerId);
+
+            if (!string.IsNullOrEmpty(jobTitle))
+                data = data.Where(x => x.職稱.Contains(jobTitle));
 
             return data;
         }
