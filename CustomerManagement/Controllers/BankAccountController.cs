@@ -7,10 +7,13 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CustomerManagement.Models;
+using CustomerManagement.Models.ActionFilterAttributes;
 using CustomerManagement.Models.FilterAttributes;
 
 namespace CustomerManagement.Controllers
 {
+    [ActionInterval]
+    [ActionResultInterval]
     public class BankAccountController : Controller
     {
         private readonly 客戶銀行資訊Repository _repoBankAccount = RepositoryHelper.Get客戶銀行資訊Repository();

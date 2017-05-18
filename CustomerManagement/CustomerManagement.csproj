@@ -156,6 +156,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ActionFilterAttributes\ActionIntervalAttribute.cs" />
+    <Compile Include="Models\ActionFilterAttributes\ActionResultIntervalAttribute.cs" />
     <Compile Include="Models\Customer.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

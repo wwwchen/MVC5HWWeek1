@@ -7,16 +7,20 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CustomerManagement.Models;
+using CustomerManagement.Models.ActionFilterAttributes;
 using CustomerManagement.Models.FilterAttributes;
 
 namespace CustomerManagement.Controllers
 {
+    [ActionInterval]
+    [ActionResultInterval]
     public class CustomerInfoController : Controller
     {
         private readonly 客戶資料Repository _repoCustomer = RepositoryHelper.Get客戶資料Repository();
         private readonly V客戶統計資料Repository _repoCustomerStatistic = RepositoryHelper.GetV客戶統計資料Repository();
 
         // GET: CustomerInfo
+        [ActionInterval]
         public ActionResult Index(string customerName, string category)
         {
             ViewData.Model = _repoCustomer.GetCustomerInfos(customerName: customerName, category: category).ToList();
