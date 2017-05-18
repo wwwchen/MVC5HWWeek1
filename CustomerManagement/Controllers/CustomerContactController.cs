@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CustomerManagement.Models;
+using CustomerManagement.Models.FilterAttributes;
 
 namespace CustomerManagement.Controllers
 {
@@ -64,6 +65,7 @@ namespace CustomerManagement.Controllers
         // 詳細資訊，請參閱 https://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [DbUpdateError]
         public ActionResult Create([Bind(Include = "Id,客戶Id,職稱,姓名,Email,手機,電話")] 客戶聯絡人 customerContact)
         {
             if (ModelState.IsValid)
@@ -107,6 +109,7 @@ namespace CustomerManagement.Controllers
         // 詳細資訊，請參閱 https://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [DbUpdateError]
         public ActionResult Edit([Bind(Include = "Id,客戶Id,職稱,姓名,Email,手機,電話")] 客戶聯絡人 customerContact, FormCollection form)
         {
             ;
@@ -149,6 +152,7 @@ namespace CustomerManagement.Controllers
         // POST: CustomerContact/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [DbUpdateError]
         public ActionResult DeleteConfirmed(int id)
         {
             var data = _repoCustomerContact.GetSingleRecordByCustomerContactId(id);

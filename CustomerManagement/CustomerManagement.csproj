@@ -182,6 +182,7 @@
     <Compile Include="Models\EFUnitOfWork.cs">
       <DependentUpon>IRepository.EF6..tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\FilterAttributes\DbUpdateErrorAttribute.cs" />
     <Compile Include="Models\IRepository.EF6..cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -311,6 +312,7 @@
     <Content Include="Views\BankAccount\Edit.cshtml" />
     <Content Include="Views\BankAccount\Index.cshtml" />
     <Content Include="Views\CustomerInfo\CustomerStatistics.cshtml" />
+    <Content Include="Views\Shared\Error_DbUpdateException.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\ViewModels\" />

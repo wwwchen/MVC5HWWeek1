@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CustomerManagement.Models;
+using CustomerManagement.Models.FilterAttributes;
 
 namespace CustomerManagement.Controllers
 {
@@ -63,6 +64,7 @@ namespace CustomerManagement.Controllers
         // 詳細資訊，請參閱 https://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [DbUpdateError]
         public ActionResult Create([Bind(Include = "Id,客戶Id,銀行名稱,銀行代碼,分行代碼,帳戶名稱,帳戶號碼")] 客戶銀行資訊 bankAccount)
         {
             if (ModelState.IsValid)
@@ -106,6 +108,7 @@ namespace CustomerManagement.Controllers
         // 詳細資訊，請參閱 https://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [DbUpdateError]
         public ActionResult Edit([Bind(Include = "Id,客戶Id,銀行名稱,銀行代碼,分行代碼,帳戶名稱,帳戶號碼")] 客戶銀行資訊 bankAccount, FormCollection form)
         {
             var data = _repoBankAccount.GetSingleRecordByBankAccountId(bankAccount.Id);
@@ -147,6 +150,7 @@ namespace CustomerManagement.Controllers
         // POST: BankAccount/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [DbUpdateError]
         public ActionResult DeleteConfirmed(int id)
         {
             var data = _repoBankAccount.GetSingleRecordByBankAccountId(id);
