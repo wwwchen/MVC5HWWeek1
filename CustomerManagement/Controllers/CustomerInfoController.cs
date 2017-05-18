@@ -12,13 +12,13 @@ namespace CustomerManagement.Controllers
 {
     public class CustomerInfoController : Controller
     {
-        private 客戶資料Entities db = new 客戶資料Entities();
-        private 客戶資料Repository repo = RepositoryHelper.Get客戶資料Repository();
+        private readonly 客戶資料Repository _repoCustomer = RepositoryHelper.Get客戶資料Repository();
+        private readonly V客戶統計資料Repository _repoCustomerStatistic = RepositoryHelper.GetV客戶統計資料Repository();
 
         // GET: CustomerInfo
         public ActionResult Index(string customerName)
         {
-            ViewData.Model = repo.GetCustomerInfoList(customerName: customerName).ToList();
+            ViewData.Model = _repoCustomer.GetCustomerInfos(customerName: customerName).ToList();
 
             return View();
         }
@@ -30,12 +30,17 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
-            if (客戶資料 == null)
+
+            var data = _repoCustomer.GetSingleRecordByCustomerId(id.Value);
+
+            if (data == null)
             {
                 return HttpNotFound();
             }
-            return View(客戶資料);
+
+            ViewData.Model = data;
+
+            return View();
         }
 
         // GET: CustomerInfo/Create
@@ -53,8 +58,8 @@ namespace CustomerManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.客戶資料.Add(客戶資料);
-                db.SaveChanges();
+                _repoCustomer.Add(客戶資料);
+                _repoCustomer.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
 
@@ -68,12 +73,17 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Where(x => x.是否已刪除 == false).FirstOrDefault(x => x.Id == id);
-            if (客戶資料 == null)
+
+            var data = _repoCustomer.GetSingleRecordByCustomerId(id.Value);
+
+            if (data == null)
             {
                 return HttpNotFound();
             }
-            return View(客戶資料);
+
+            ViewData.Model = data;
+
+            return View();
         }
 
         // POST: CustomerInfo/Edit/5
@@ -81,15 +91,18 @@ namespace CustomerManagement.Controllers
         // 詳細資訊，請參閱 https://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email")] 客戶資料 客戶資料)
+        public ActionResult Edit([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email")] 客戶資料 customerInfo, FormCollection form)
         {
-            if (ModelState.IsValid)
+            var data = _repoCustomer.GetSingleRecordByCustomerId(customerInfo.Id);
+
+            if (TryUpdateModel(data
+                , "", form.AllKeys, new string[] { "Id" }))
             {
-                db.Entry(客戶資料).State = EntityState.Modified;
-                db.SaveChanges();
+                _repoCustomer.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
-            return View(客戶資料);
+
+            return View(data);
         }
 
         // GET: CustomerInfo/Delete/5
@@ -99,12 +112,17 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Where(x => x.是否已刪除 == false).FirstOrDefault(x => x.Id == id);
-            if (客戶資料 == null)
+
+            var data = _repoCustomer.GetSingleRecordByCustomerId(id.Value);
+
+            if (data == null)
             {
                 return HttpNotFound();
             }
-            return View(客戶資料);
+
+            ViewData.Model = data;
+
+            return View();
         }
 
         // POST: CustomerInfo/Delete/5
@@ -112,24 +130,17 @@ namespace CustomerManagement.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
-            客戶資料.是否已刪除 = true;
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+            var data = _repoCustomer.GetSingleRecordByCustomerId(id);
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            _repoCustomer.Delete(data);
+            _repoCustomer.UnitOfWork.Commit();
+            return RedirectToAction("Index");
         }
 
         public ActionResult CustomerStatistics()
         {
-            return View(db.V客戶統計資料.ToList());
+            ViewData.Model = _repoCustomerStatistic.All();
+            return View();
         }
     }
 }

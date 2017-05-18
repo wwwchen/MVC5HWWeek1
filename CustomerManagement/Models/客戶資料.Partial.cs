@@ -36,6 +36,8 @@ namespace CustomerManagement.Models
         [EmailAddress]
         public string Email { get; set; }
 
+        public bool 是否已刪除 { get; set; }
+
         public virtual ICollection<客戶銀行資訊> 客戶銀行資訊 { get; set; }
         public virtual ICollection<客戶聯絡人> 客戶聯絡人 { get; set; }
     }

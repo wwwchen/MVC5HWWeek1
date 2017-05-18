@@ -12,21 +12,22 @@ namespace CustomerManagement.Controllers
 {
     public class BankAccountController : Controller
     {
-        private 客戶資料Entities db = new 客戶資料Entities();
+        private readonly 客戶銀行資訊Repository _repoBankAccount = RepositoryHelper.Get客戶銀行資訊Repository();
+        private readonly 客戶資料Repository _repoCustomer = RepositoryHelper.Get客戶資料Repository();
+
+        private void SetViewBagCustomers(bool includeDelete = true)
+        {
+            ViewBag.Customers = new SelectList(_repoCustomer.All(includeDelete), "Id", "客戶名稱");
+        }
 
         // GET: BankAccount
         public ActionResult Index(int? customerId)
         {
-            var data = db.客戶銀行資訊.Where(x => x.是否已刪除 == false).AsQueryable();
+            ViewData.Model = _repoBankAccount.GetBankAccounts(customerId: customerId);
 
-            if (customerId.HasValue && customerId.Value != 0)
-                data = data.Where(x => x.客戶Id == customerId);
+            SetViewBagCustomers();
 
-            data = data.Take(10);
-
-            ViewBag.Customers = new SelectList(db.客戶資料, "Id", "客戶名稱");
-
-            return View(data);
+            return View();
         }
 
         // GET: BankAccount/Details/5
@@ -36,18 +37,24 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
-            if (客戶銀行資訊 == null)
+
+            var data = _repoBankAccount.GetSingleRecordByBankAccountId(id);
+
+
+            if (data == null)
             {
                 return HttpNotFound();
             }
-            return View(客戶銀行資訊);
+
+            ViewData.Model = data;
+
+            return View();
         }
 
         // GET: BankAccount/Create
         public ActionResult Create()
         {
-            ViewBag.客戶Id = new SelectList(db.客戶資料.Where(x => x.是否已刪除 == false), "Id", "客戶名稱");
+            SetViewBagCustomers(includeDelete: false);
             return View();
         }
 
@@ -56,17 +63,20 @@ namespace CustomerManagement.Controllers
         // 詳細資訊，請參閱 https://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,客戶Id,銀行名稱,銀行代碼,分行代碼,帳戶名稱,帳戶號碼")] 客戶銀行資訊 客戶銀行資訊)
+        public ActionResult Create([Bind(Include = "Id,客戶Id,銀行名稱,銀行代碼,分行代碼,帳戶名稱,帳戶號碼")] 客戶銀行資訊 bankAccount)
         {
             if (ModelState.IsValid)
             {
-                db.客戶銀行資訊.Add(客戶銀行資訊);
-                db.SaveChanges();
+                _repoBankAccount.Add(bankAccount);
+                _repoBankAccount.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.客戶Id = new SelectList(db.客戶資料.Where(x => x.是否已刪除 == false), "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
-            return View(客戶銀行資訊);
+            SetViewBagCustomers(includeDelete: false);
+
+            ViewData.Model = bankAccount;
+
+            return View();
         }
 
         // GET: BankAccount/Edit/5
@@ -76,13 +86,19 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Where(x => x.是否已刪除 == false).FirstOrDefault(x => x.Id == id);
-            if (客戶銀行資訊 == null)
+
+            var data = _repoBankAccount.GetSingleRecordByBankAccountId(id.Value);
+
+            if (data == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
-            return View(客戶銀行資訊);
+
+            SetViewBagCustomers();
+
+            ViewData.Model = data;
+
+            return View();
         }
 
         // POST: BankAccount/Edit/5
@@ -90,16 +106,22 @@ namespace CustomerManagement.Controllers
         // 詳細資訊，請參閱 https://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,客戶Id,銀行名稱,銀行代碼,分行代碼,帳戶名稱,帳戶號碼")] 客戶銀行資訊 客戶銀行資訊)
+        public ActionResult Edit([Bind(Include = "Id,客戶Id,銀行名稱,銀行代碼,分行代碼,帳戶名稱,帳戶號碼")] 客戶銀行資訊 bankAccount, FormCollection form)
         {
-            if (ModelState.IsValid)
+            var data = _repoBankAccount.GetSingleRecordByBankAccountId(bankAccount.Id);
+
+            if (TryUpdateModel(data, ""
+                , form.AllKeys, new string[] { "Id" }))
             {
-                db.Entry(客戶銀行資訊).State = EntityState.Modified;
-                db.SaveChanges();
+                _repoBankAccount.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
-            return View(客戶銀行資訊);
+
+            SetViewBagCustomers(); ;
+
+            ViewData.Model = data;
+
+            return View();
         }
 
         // GET: BankAccount/Delete/5
@@ -109,12 +131,17 @@ namespace CustomerManagement.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Where(x => x.是否已刪除 == false).FirstOrDefault(x => x.Id == id);
-            if (客戶銀行資訊 == null)
+
+            var data = _repoBankAccount.GetSingleRecordByBankAccountId(id);
+
+            if (data == null)
             {
                 return HttpNotFound();
             }
-            return View(客戶銀行資訊);
+
+            ViewData.Model = data;
+
+            return View();
         }
 
         // POST: BankAccount/Delete/5
@@ -122,19 +149,12 @@ namespace CustomerManagement.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
-            客戶銀行資訊.是否已刪除 = true;
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+            var data = _repoBankAccount.GetSingleRecordByBankAccountId(id);
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            _repoBankAccount.Delete(data);
+            _repoBankAccount.UnitOfWork.Commit();
+
+            return RedirectToAction("Index");
         }
     }
 }
