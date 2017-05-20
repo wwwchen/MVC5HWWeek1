@@ -4,11 +4,13 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using CustomerManagement.Models;
 using CustomerManagement.Models.ActionFilterAttributes;
 using CustomerManagement.Models.FilterAttributes;
+using X.PagedList;
 
 namespace CustomerManagement.Controllers
 {
@@ -21,13 +23,32 @@ namespace CustomerManagement.Controllers
 
         // GET: CustomerInfo
         [ActionInterval]
+        [OutputCache(NoStore = true, Duration = 0)]
         public ActionResult Index(string customerName, string category)
         {
-            ViewData.Model = _repoCustomer.GetCustomerInfos(customerName: customerName, category: category).ToList();
 
             ViewBag.Categorys = new SelectList(_repoCustomer.GetCategorys(), "key", "value"); ;
 
             return View();
+        }
+
+        [OutputCache(NoStore = true, Duration = 0)]
+        public async Task<PartialViewResult> PagedPartial(
+            int? page, string customerName, string category)
+        {
+            var data = await _repoCustomer.GetCustomerInfos(customerName: customerName, category: category).ToListAsync();
+
+            int pageIndex = page ?? 1;
+            int pageSize = 3;
+            int totalCount = 0;
+
+            totalCount = data.Count();
+
+            var s = data.OrderBy(x => x.Id).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+
+            var pageResult = new StaticPagedList<CustomerManagement.Models.客戶資料>(s, pageIndex, pageSize, totalCount);
+
+            return PartialView("_CustomerInfoPagedPartial", pageResult);
         }
 
         // GET: CustomerInfo/Details/5
@@ -62,7 +83,7 @@ namespace CustomerManagement.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [DbUpdateError]
-        public ActionResult Create([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email")] 客戶資料 客戶資料)
+        public ActionResult Create([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email,客戶分類")] 客戶資料 客戶資料)
         {
             if (ModelState.IsValid)
             {
@@ -100,7 +121,7 @@ namespace CustomerManagement.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [DbUpdateError]
-        public ActionResult Edit([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email")] 客戶資料 customerInfo, FormCollection form)
+        public ActionResult Edit([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email,客戶分類")] 客戶資料 customerInfo, FormCollection form)
         {
             var data = _repoCustomer.GetSingleRecordByCustomerId(customerInfo.Id);
 
